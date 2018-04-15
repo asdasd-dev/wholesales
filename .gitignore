@@ -1,2 +1,7 @@
-/.idea
-APDescription.txt
+/*
+!/src
+/src/*
+!/src/custom
+*
+!License
+!README
