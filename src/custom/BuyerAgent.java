@@ -20,6 +20,7 @@ public class BuyerAgent extends Agent {
         Object args[] = getArguments(); //первый аргумент - матрица (a11 a12 a13 a21 a22 a23 ...), второй - маршрут агента (в виде строки с номерами вершин "r1 r2 r3")
 
         setAdjacencyMatrix(args[0].toString()); // задаём матрицу
+        setAgentRoute(args[1].toString()); // задаём маршрут
 
         DFAgentDescription dfd = new DFAgentDescription();
         dfd.setName(getAID());
