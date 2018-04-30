@@ -1,5 +1,6 @@
 package custom;
 
+import com.google.gson.Gson;
 import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -7,62 +8,72 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.util.leap.ArrayList;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+
 public class BuyerAgent extends Agent {
 
-    private int[][] adjacencyMatrix; // матрица смежности с весами
+    private int baseWithGoods; // вершина, в которую доставлены все товары
     private int[] routes; // маршрут агента
+    private double greed; // кф жадности (стоимость 1 ед. отклонения от траектории)
+    private int index;
+    public Data data;
+
+    public staticBuyerBehaviour myStaticBuyerBehaviour;
+    public dynamicBuyerBehaviour myDynamicBuyerBehaviour;
 
     @Override
     protected void setup() {
         super.setup();
-        System.out.println("Yo! Agent " + getAID().getName() + " is in game!");
 
-        Object args[] = getArguments(); //первый аргумент - матрица (a11 a12 a13 a21 a22 a23 ...), второй - маршрут агента (в виде строки с номерами вершин "r1 r2 r3")
-
-        setAdjacencyMatrix(args[0].toString()); // задаём матрицу
-        setAgentRoute(args[1].toString()); // задаём маршрут
-
-        DFAgentDescription dfd = new DFAgentDescription();
-        dfd.setName(getAID());
-
-        ServiceDescription sd = new ServiceDescription();
-        sd.setName("buyer-agent");
-
-        dfd.addServices(sd);
+        Gson g = new Gson();
+        Data data = new Data();
 
         try {
-            DFService.register(this, dfd);
-        } catch (FIPAException fe) {
-            fe.printStackTrace();
-
+            data = g.fromJson(new FileReader("C:\\jade\\src\\custom\\data.json"), Data.class);
         }
-    }
-
-    private void setAdjacencyMatrix(String adjacencyMatrix){ // задаём матрицу смежности по строке
-        String adjacencyMatrixArray[] = adjacencyMatrix.split(" ");
-        int countOfVertices = (int) Math.sqrt(adjacencyMatrixArray.length);
-        this.adjacencyMatrix = new int[countOfVertices][countOfVertices];
-        for (int i = 0; i < countOfVertices * countOfVertices; i++)
+        catch (FileNotFoundException ex)
         {
-            this.adjacencyMatrix[i / countOfVertices][i % countOfVertices] = Integer.parseInt(adjacencyMatrixArray[i]);
+            ex.printStackTrace();
+        }
+
+        Object[] args = getArguments();
+        this.baseWithGoods = Integer.parseInt(args[0].toString());
+        setAgentRoute(args[1].toString());
+        this.index = Integer.parseInt(args[2].toString());
+
+        System.out.println("Yo! Agent " + getAID().getName() + " is in game!");
+
+        if (routes.length > 1)
+        {
+            this.myDynamicBuyerBehaviour = new dynamicBuyerBehaviour(this);
+            addBehaviour(myDynamicBuyerBehaviour);
+        }
+        else
+        {
+            this.myStaticBuyerBehaviour = new staticBuyerBehaviour(this);
+            addBehaviour(myStaticBuyerBehaviour);
         }
     }
 
     private void setAgentRoute(String agentRoute){ // задаём маршруты передвижений агентов
         String agentRouteArray[] = agentRoute.split(" ");
-        int countOfVertices = (int) Math.sqrt(agentRouteArray.length);
-        this.routes = new int[countOfVertices];
-        for (int i = 0; i < countOfVertices; i++)
+        this.routes = new int[agentRouteArray.length];
+        for (int i = 0; i < agentRouteArray.length; i++)
         {
             this.routes[i] = Integer.parseInt(agentRouteArray[i]);
         }
     }
 
-    public int[][] getAdjacencyMatrix(){
-        return this.adjacencyMatrix;
-    }
-
     public int[] getRoutes(){
         return this.routes;
+    }
+
+    public int getBaseWithGoods(){
+        return this.baseWithGoods;
+    }
+
+    public int getIndex(){
+        return this.index;
     }
 }
