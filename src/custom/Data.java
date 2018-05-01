@@ -5,4 +5,5 @@ public class Data {
     public String[] adjacencyMatrix;
     public int numberOfAgents;
     public String[] routes;
+    public int[] money;
 }

@@ -1,5 +1,7 @@
-package custom;
+package custom.DynamicBehaviours;
 
+import custom.BuyerAgent;
+import custom.DynamicBehaviours.dynamicBuyerBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;

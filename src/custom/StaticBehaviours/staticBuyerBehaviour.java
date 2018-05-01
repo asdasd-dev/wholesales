@@ -1,14 +1,12 @@
-package custom;
+package custom.StaticBehaviours;
 
+import custom.BuyerAgent;
+import custom.Inform;
+import custom.Offer;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.FSMBehaviour;
-import jade.domain.DFService;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.Property;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
-import jade.domain.FIPAException;
-import jade.util.leap.Iterator;
+import jade.core.behaviours.WakerBehaviour;
 
 
 import java.util.LinkedList;
@@ -21,18 +19,27 @@ public class staticBuyerBehaviour extends FSMBehaviour {
 
     private final String SEARCH_DELIVERYMAN_STATE             = "Search deliveryman";
     private final String SEND_PROPOSALS_STATE                 = "Send proposals";
+    private final String WAIT_FOR_YP_REGISTER                 = "Waiting for YP registration";
 
     public static final int POSITIVE_CONDITION =  1;
     public static final int NEGATIVE_CONDITION =  0;
     public static final int FORCE_REJECT       = -1;
+
+    public LinkedList<Inform> informOffers;
 
     public staticBuyerBehaviour(Agent a)
     {
         super(a);
         this.myBuyerAgent = (BuyerAgent) myAgent;
 
-        registerFirstState(new searchForDeliveryOffers(), SEARCH_DELIVERYMAN_STATE);
-        registerState(new staticSendProposalsBehaviour(), SEND_PROPOSALS_STATE);
+        registerFirstState(new WakerBehaviour(a, 100) { }, WAIT_FOR_YP_REGISTER);
+        registerState(new searchForDeliveryOffers(), SEARCH_DELIVERYMAN_STATE);
+        registerLastState(new staticSendProposalsBehaviour(), SEND_PROPOSALS_STATE);
+
+        registerDefaultTransition(
+                WAIT_FOR_YP_REGISTER,
+                SEARCH_DELIVERYMAN_STATE
+        );
 
         registerDefaultTransition(
                 SEARCH_DELIVERYMAN_STATE,

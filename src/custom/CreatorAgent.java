@@ -34,7 +34,7 @@ public class CreatorAgent extends Agent {
             for (int i = 0; i < data.numberOfAgents; i++) {
                 String nameAgent = "agent_" + i;
                 agent = cc.createNewAgent(nameAgent, "custom.BuyerAgent",
-                        new Object[]{args[0], data.routes[i].replace(',', ' '), Integer.toString(i)}); // изначально агент получает номер вершины с базой с товарами, маршрут своего передвижения по ней и свой индекс
+                        new Object[]{args[0], data.routes[i].replace(',', ' '), Integer.toString(i), Integer.toString(data.money[i])}); // изначально агент получает номер вершины с базой с товарами, маршрут своего передвижения по ней и свой индекс и количество денег
                 agent.start();
             }
         }

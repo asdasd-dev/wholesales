@@ -1,12 +1,9 @@
 package custom;
 
 import com.google.gson.Gson;
+import custom.DynamicBehaviours.dynamicBuyerBehaviour;
+import custom.StaticBehaviours.staticBuyerBehaviour;
 import jade.core.Agent;
-import jade.domain.DFService;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
-import jade.domain.FIPAException;
-import jade.util.leap.ArrayList;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -16,6 +13,7 @@ public class BuyerAgent extends Agent {
     private int baseWithGoods; // вершина, в которую доставлены все товары
     private int[] routes; // маршрут агента
     private double greed; // кф жадности (стоимость 1 ед. отклонения от траектории)
+    private int myMoney;
     private int index;
     public Data data;
 
@@ -41,6 +39,7 @@ public class BuyerAgent extends Agent {
         this.baseWithGoods = Integer.parseInt(args[0].toString());
         setAgentRoute(args[1].toString());
         this.index = Integer.parseInt(args[2].toString());
+        this.myMoney = Integer.parseInt(args[3].toString());
 
         System.out.println("Yo! Agent " + getAID().getName() + " is in game!");
 
@@ -75,5 +74,9 @@ public class BuyerAgent extends Agent {
 
     public int getIndex(){
         return this.index;
+    }
+
+    public int getMoney(){
+        return this.myMoney;
     }
 }

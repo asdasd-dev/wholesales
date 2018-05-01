@@ -1,5 +1,7 @@
-package custom;
+package custom.StaticBehaviours;
 
+import custom.BuyerAgent;
+import custom.StaticBehaviours.staticBuyerBehaviour;
 import jade.core.AID;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
@@ -40,7 +42,7 @@ public class staticSendProposalsBehaviour extends OneShotBehaviour {
             startConversationMessage.setContent(message); // отправляем точку(точки), куда надо доставить и свой индекс
 
             myBuyerAgent.send(startConversationMessage);
-
+            System.out.println("Agent " + myParent.myBuyerAgent.getLocalName() + " sent a proposal to " + aid.getLocalName());
         });
     }
 }
