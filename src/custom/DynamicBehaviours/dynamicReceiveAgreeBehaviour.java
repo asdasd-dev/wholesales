@@ -1,5 +1,6 @@
 package custom.DynamicBehaviours;
 
+import custom.Agree;
 import custom.Offer;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -7,8 +8,7 @@ import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
-public class dynamicReceiveProposalsBehaviour extends SimpleBehaviour {
-
+public class dynamicReceiveAgreeBehaviour extends SimpleBehaviour {
     private long timeOut, wakeupTime;
     private boolean finished;
 
@@ -21,7 +21,7 @@ public class dynamicReceiveProposalsBehaviour extends SimpleBehaviour {
 
     public ACLMessage getMessage() { return msg; }
 
-    public dynamicReceiveProposalsBehaviour(Agent a, int millis) {
+    public dynamicReceiveAgreeBehaviour(Agent a, int millis) {
         super(a);
         timeOut = millis;
         finished = false;
@@ -30,7 +30,7 @@ public class dynamicReceiveProposalsBehaviour extends SimpleBehaviour {
     public void onStart() {
         myParent = (dynamicBuyerBehaviour) getParent();
         template = new MessageTemplate((MessageTemplate.MatchExpression) aclMessage ->
-                aclMessage.getPerformative() == (ACLMessage.PROPOSE)); // Шаблон для предложений
+                aclMessage.getPerformative() == (ACLMessage.AGREE)); // Шаблон для предложений
         wakeupTime = (timeOut<0 ? Long.MAX_VALUE
                 :System.currentTimeMillis() + timeOut);
     }
@@ -61,8 +61,8 @@ public class dynamicReceiveProposalsBehaviour extends SimpleBehaviour {
         if (m == null) {
             System.out.println(myParent.myBuyerAgent.getLocalName() + " received a null message");
         } else {
-            myParent.offerToAdd.add(new Offer(m));
-            System.out.println(myParent.myBuyerAgent.getLocalName() + " received a proposal from " + m.getSender().getLocalName());
+            myParent.agreeOffers.add(new Agree(m));
+            System.out.println(myParent.myBuyerAgent.getLocalName() + " received an agree message from " + m.getSender().getLocalName());
         }
 
     }

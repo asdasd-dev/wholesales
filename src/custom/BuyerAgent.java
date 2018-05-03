@@ -12,7 +12,8 @@ public class BuyerAgent extends Agent {
 
     private int baseWithGoods; // вершина, в которую доставлены все товары
     private int[] routes; // маршрут агента
-    private double greed; // кф жадности (стоимость 1 ед. отклонения от траектории)
+    private int greed; // кф жадности (стоимость 1 ед. отклонения от траектории)
+    public int[][] graph;
     private int myMoney;
     private int index;
     public Data data;
@@ -38,8 +39,10 @@ public class BuyerAgent extends Agent {
         Object[] args = getArguments();
         this.baseWithGoods = Integer.parseInt(args[0].toString());
         setAgentRoute(args[1].toString());
+        setGraph(data.adjacencyMatrix);
         this.index = Integer.parseInt(args[2].toString());
         this.myMoney = Integer.parseInt(args[3].toString());
+        this.greed = data.greed[this.index];
 
         System.out.println("Yo! Agent " + getAID().getName() + " is in game!");
 
@@ -78,5 +81,23 @@ public class BuyerAgent extends Agent {
 
     public int getMoney(){
         return this.myMoney;
+    }
+
+    public int getGreed(){
+        return this.greed;
+    }
+
+
+    private void setGraph(String[] adjMatrix){
+        int length = adjMatrix.length;
+        this.graph = new int [length][length];
+        for (int i = 0; i < length; i++)
+        {
+            String[] line = adjMatrix[i].split(",");
+            for (int j = 0; j < length; j++)
+            {
+                this.graph[i][j] = Integer.parseInt(line[j]);
+            }
+        }
     }
 }

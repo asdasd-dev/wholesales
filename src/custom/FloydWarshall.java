@@ -52,4 +52,31 @@ public class FloydWarshall{
 
             return dist;
         }
+
+        public static int[][] fw(int graph[][]) {
+            int size = graph[0].length;
+            int dist[][] = new int[size][size];
+
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    dist[i][j] = graph[i][j] > 0 ? graph[i][j] : INF; // если нет пути из точки в точку, то ставим бесконечность
+                }
+            }
+
+            for (int k = 0; k < size; k++) // определяем минимальную величину изменения маршрута для доставки товара из одной точки в другую
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    for (int j = 0; j < size; j++)
+                    {
+                        if (dist[i][k] + dist[k][j] < dist[i][j])
+                            dist[i][j] = dist[i][k] + dist[k][j];
+                    }
+                }
+            }
+
+            return  dist;
+        }
+
+
 }

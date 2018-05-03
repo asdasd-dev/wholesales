@@ -15,21 +15,26 @@ public class staticAnswerToInformBehaviour extends OneShotBehaviour {
     @Override
     public void action() {
         myParent = (staticBuyerBehaviour) getParent();
-        Inform bestOffer = myParent.informOffers.getFirst();
+        if (!myParent.informOffers.isEmpty()) {
+            Inform bestOffer = myParent.informOffers.getFirst();
+            for (Inform a : myParent.informOffers) {
+                if (a.price < bestOffer.price) {
+                    bestOffer = a;
+                }
+            }
 
-        for (Inform a : myParent.informOffers) {
-            if (a.price < bestOffer.price) {
-                bestOffer = a;
+            if (bestOffer.price <= myParent.myBuyerAgent.getMoney()) {
+                ACLMessage replyMsg = bestOffer.message.createReply();
+                replyMsg.setPerformative(ACLMessage.AGREE);
+                replyMsg.setContent(Integer.toString(bestOffer.deleiveryPoint) + " " + Integer.toString(bestOffer.price)); // 1 аргумент - точка, где ждём доставщика, 2 - цена
+                myParent.myBuyerAgent.send(replyMsg);
+                System.out.println("Agent " + myParent.myBuyerAgent.getLocalName() + " is waiting the item to be delivered at the vertex " + Integer.toString(bestOffer.deleiveryPoint)
+                        + " from the agent " + bestOffer.message.getSender().getLocalName());
             }
         }
-
-        if (bestOffer.price <= myParent.myBuyerAgent.getMoney()) {
-            ACLMessage replyMsg = bestOffer.message.createReply();
-            replyMsg.setPerformative(ACLMessage.AGREE);
-            replyMsg.setContent(Integer.toString(bestOffer.deleiveryPoint) + " " + Integer.toString(bestOffer.price)); // 1 аргумент - точка, где ждём доставщика, 2 - цена
-            myParent.myBuyerAgent.send(replyMsg);
-            System.out.println("Agent " + myParent.myBuyerAgent.getLocalName() + " is waiting the item to be delivered at the vertex " + Integer.toString(bestOffer.deleiveryPoint)
-                    + " from the agent " + bestOffer.message.getSender().getLocalName());
+        else
+        {
+            block(1000);
         }
     }
 }

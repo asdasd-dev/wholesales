@@ -4,6 +4,7 @@ import custom.DynamicBehaviours.dynamicBuyerBehaviour;
 import custom.Inform;
 import custom.Offer;
 import jade.core.Agent;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
@@ -24,6 +25,7 @@ public class staticReceiveInformBehaviour extends SimpleBehaviour {
     public staticReceiveInformBehaviour(Agent a, int millis) {
         super(a);
         timeOut = millis;
+        finished = false;
     }
 
     public void onStart() {
@@ -35,27 +37,24 @@ public class staticReceiveInformBehaviour extends SimpleBehaviour {
     }
 
     @Override
-    public boolean done() {
-        return finished;
+    public void action() {
+        msg = myAgent.receive(template);
+        if (msg != null) {
+            handle( msg );
+        }
+        long dt = wakeupTime - System.currentTimeMillis();
+        if ( dt > 0 ) {
+            block(dt > timeOut / 10 ? timeOut / 10 : dt);
+        }
+        else
+        {
+            finished = true;
+        }
     }
 
     @Override
-    public void action() {
-
-        msg = myAgent.receive(template);
-
-        if( msg != null) {
-            finished = true;
-            handle( msg );
-            return;
-        }
-        long dt = wakeupTime - System.currentTimeMillis();
-        if ( dt > 0 )
-            block(dt);
-        else {
-            finished = true;
-            handle( msg );
-        }
+    public boolean done() {
+        return finished;
     }
 
     public void handle(ACLMessage m) {

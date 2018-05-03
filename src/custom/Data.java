@@ -6,4 +6,5 @@ public class Data {
     public int numberOfAgents;
     public String[] routes;
     public int[] money;
+    public int[] greed;
 }
