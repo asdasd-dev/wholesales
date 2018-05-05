@@ -16,6 +16,7 @@ public class BuyerAgent extends Agent {
     public int[][] graph;
     private int myMoney;
     private int index;
+    public boolean isStatic;
     public Data data;
 
     public staticBuyerBehaviour myStaticBuyerBehaviour;
@@ -50,11 +51,13 @@ public class BuyerAgent extends Agent {
         {
             this.myDynamicBuyerBehaviour = new dynamicBuyerBehaviour(this);
             addBehaviour(myDynamicBuyerBehaviour);
+            isStatic = false;
         }
         else
         {
             this.myStaticBuyerBehaviour = new staticBuyerBehaviour(this);
             addBehaviour(myStaticBuyerBehaviour);
+            isStatic = true;
         }
     }
 
