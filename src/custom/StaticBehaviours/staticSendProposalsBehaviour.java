@@ -15,12 +15,9 @@ public class staticSendProposalsBehaviour extends OneShotBehaviour {
 
     @Override
     public void action() {
-        staticBuyerBehaviour myParent = (staticBuyerBehaviour) getParent();
         myBuyerAgent = (BuyerAgent) myAgent;
 
-        List<AID> suitableDrivers = myParent.listOfDynamicAgents;
-
-        suitableDrivers.forEach(aid -> {
+        myBuyerAgent.listOfDynamicAgents.forEach(aid -> {
             ACLMessage startConversationMessage = new ACLMessage(ACLMessage.PROPOSE);
             startConversationMessage.addReceiver(aid);
 
@@ -42,7 +39,7 @@ public class staticSendProposalsBehaviour extends OneShotBehaviour {
             startConversationMessage.setContent(message); // отправляем точку(точки), куда надо доставить и свой индекс
 
             myBuyerAgent.send(startConversationMessage);
-            System.out.println("Agent " + myParent.myBuyerAgent.getLocalName() + " sent a proposal to " + aid.getLocalName());
+            System.out.println("Agent " + myBuyerAgent.getLocalName() + " sent a proposal to " + aid.getLocalName());
         });
     }
 }

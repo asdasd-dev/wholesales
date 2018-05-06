@@ -1,5 +1,6 @@
 package custom.DynamicBehaviours;
 
+import custom.BuyerAgent;
 import custom.Offer;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -12,7 +13,7 @@ public class dynamicReceiveProposalsBehaviour extends SimpleBehaviour {
     private long timeOut, wakeupTime;
     private boolean finished;
 
-    private dynamicBuyerBehaviour myParent; // Экземпляр конечного автомата
+    private BuyerAgent myBuyerAgent;
 
     private ACLMessage msg;
     private int messagesReceived;
@@ -28,7 +29,7 @@ public class dynamicReceiveProposalsBehaviour extends SimpleBehaviour {
     }
 
     public void onStart() {
-        myParent = (dynamicBuyerBehaviour) getParent();
+        myBuyerAgent = (BuyerAgent) myAgent;
         template = new MessageTemplate((MessageTemplate.MatchExpression) aclMessage ->
                 aclMessage.getPerformative() == (ACLMessage.PROPOSE)); // Шаблон для предложений
         wakeupTime = (timeOut<0 ? Long.MAX_VALUE
@@ -59,10 +60,10 @@ public class dynamicReceiveProposalsBehaviour extends SimpleBehaviour {
     public void handle(ACLMessage m) {
 
         if (m == null) {
-            System.out.println(myParent.myBuyerAgent.getLocalName() + " received a null message");
+            System.out.println(myBuyerAgent.getLocalName() + " received a null message");
         } else {
-            myParent.offerToAdd.add(new Offer(m));
-            System.out.println(myParent.myBuyerAgent.getLocalName() + " received a proposal from " + m.getSender().getLocalName());
+            myBuyerAgent.offerToAdd.add(new Offer(m));
+            System.out.println(myBuyerAgent.getLocalName() + " received a proposal from " + m.getSender().getLocalName());
         }
 
     }

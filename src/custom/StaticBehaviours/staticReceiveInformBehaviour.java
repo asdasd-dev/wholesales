@@ -1,5 +1,6 @@
 package custom.StaticBehaviours;
 
+import custom.BuyerAgent;
 import custom.DynamicBehaviours.dynamicBuyerBehaviour;
 import custom.Inform;
 import custom.Offer;
@@ -13,7 +14,7 @@ public class staticReceiveInformBehaviour extends SimpleBehaviour {
     private long timeOut, wakeupTime;
     private boolean finished;
 
-    private staticBuyerBehaviour myParent; // Экземпляр конечного автомата
+    private BuyerAgent myBuyerAgent; // Экземпляр конечного автомата
 
     private ACLMessage msg;
     private int messagesReceived;
@@ -29,7 +30,7 @@ public class staticReceiveInformBehaviour extends SimpleBehaviour {
     }
 
     public void onStart() {
-        myParent = (staticBuyerBehaviour) getParent();
+        myBuyerAgent = (BuyerAgent) myAgent;
         template = new MessageTemplate((MessageTemplate.MatchExpression) aclMessage ->
                 aclMessage.getPerformative() == (ACLMessage.INFORM)); // Шаблон для предложений
         wakeupTime = (timeOut<0 ? Long.MAX_VALUE
@@ -60,10 +61,10 @@ public class staticReceiveInformBehaviour extends SimpleBehaviour {
     public void handle(ACLMessage m) {
 
         if (m == null) {
-            System.out.println(myParent.myBuyerAgent.getLocalName() + " received a null message");
+            System.out.println(myBuyerAgent.getLocalName() + " received a null message");
         } else {
-            myParent.informOffers.add(new Inform(m));
-            System.out.println(myParent.myBuyerAgent.getLocalName() + " received an inform message from " + m.getSender().getLocalName());
+            myBuyerAgent.informOffers.add(new Inform(m));
+            System.out.println(myBuyerAgent.getLocalName() + " received an inform message from " + m.getSender().getLocalName());
         }
 
     }

@@ -21,7 +21,6 @@ public class searchForDeliveryOffers extends OneShotBehaviour {
     @Override
     public void action(){
 
-        staticBuyerBehaviour myParent = (staticBuyerBehaviour) getParent();
         myBuyerAgent = (BuyerAgent) myAgent;
 
         try {
@@ -38,7 +37,7 @@ public class searchForDeliveryOffers extends OneShotBehaviour {
                 for (DFAgentDescription dfd : results) {
                     AID provider = dfd.getName();
                     if (!provider.equals(myAgent.getAID()) && !agentsForOffer.contains(provider)){
-                        myParent.listOfDynamicAgents.add(provider);
+                        myBuyerAgent.listOfDynamicAgents.add(provider);
                         agentsForOffer.add(provider);
                     }
                 }

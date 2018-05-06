@@ -35,11 +35,6 @@ public class staticBuyerBehaviour extends FSMBehaviour {
 
         this.myBuyerAgent = (BuyerAgent) myAgent;
 
-        if (myBuyerAgent.getRoutes()[0] == myBuyerAgent.getBaseWithGoods()){ // если уже находимся в вершине с товарами, то до свидания
-            System.out.println(myBuyerAgent.getLocalName() + " has received the item at the vertex " + myBuyerAgent.getRoutes()[0]);
-            myBuyerAgent.doDelete();
-        }
-
         this.informOffers = new LinkedList<Inform>();
 
         registerFirstState(new WakerBehaviour(a, 100) { }, WAIT_FOR_YP_REGISTER);

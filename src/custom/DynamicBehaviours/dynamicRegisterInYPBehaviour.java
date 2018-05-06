@@ -11,13 +11,15 @@ import jade.domain.FIPAException;
 
 public class dynamicRegisterInYPBehaviour extends OneShotBehaviour {
 
-    private dynamicBuyerBehaviour myParent;
+    public BuyerAgent myBuyerAgent;
 
     @Override
     public void action() {
 
+        myBuyerAgent = (BuyerAgent) myAgent;
+
         String myRoutes = "";
-        int[] routesArray = ((BuyerAgent) myAgent).getRoutes();
+        int[] routesArray = myBuyerAgent.getRoutes();
 
         for(int i = 0; i < routesArray.length; i++)
         {
@@ -26,7 +28,6 @@ public class dynamicRegisterInYPBehaviour extends OneShotBehaviour {
                 myRoutes += ",";
         }
 
-        myParent = (dynamicBuyerBehaviour) getParent();
         DFAgentDescription dfd = new DFAgentDescription();
         dfd.setName(myAgent.getAID());
 
@@ -52,6 +53,18 @@ public class dynamicRegisterInYPBehaviour extends OneShotBehaviour {
         }
         catch (FIPAException fe) {
             fe.printStackTrace();
+        }
+    }
+
+    @Override
+    public int onEnd() {
+        if (myBuyerAgent.isReceivedAnItem)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
         }
     }
 }
