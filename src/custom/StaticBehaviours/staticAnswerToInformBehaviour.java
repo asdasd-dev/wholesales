@@ -27,7 +27,7 @@ public class staticAnswerToInformBehaviour extends OneShotBehaviour {
 
             if (!myBuyerAgent.isStatic && !myBuyerAgent.isReceivedAnItem)
             {
-                int[][] fw = FloydWarshall.fw(myBuyerAgent.graph);
+                int[][] fw = myBuyerAgent.fw;
                 int[] myRoute = this.myBuyerAgent.getRoutes();
                 int basePoint = this.myBuyerAgent.getBaseWithGoods();
                 myBuyerAgent.selfPrice = fw[myRoute[0]][basePoint] * myBuyerAgent.getGreed() * 2;

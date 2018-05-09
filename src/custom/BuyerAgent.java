@@ -2,21 +2,28 @@ package custom;
 
 import com.google.gson.Gson;
 import custom.DynamicBehaviours.dynamicBuyerBehaviour;
+import custom.DynamicBehaviours.dynamicCyclicRAAgree;
+import custom.DynamicBehaviours.dynamicCyclicRAProposals;
+import custom.DynamicBehaviours.dynamicRegisterInYPBehaviour;
 import custom.StaticBehaviours.staticBuyerBehaviour;
 import jade.core.AID;
 import jade.core.Agent;
+import javafx.util.Pair;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class BuyerAgent extends Agent {
 
-    private int baseWithGoods; // вершина, в которую доставлены все товары
-    private int[] routes; // маршрут агента
+    public int baseWithGoods; // вершина, в которую доставлены все товары
+    public List<Integer> routes; // маршрут агента
     private int greed; // кф жадности (стоимость 1 ед. отклонения от траектории)
     public int[][] graph;
+    public int[][] fw;
+    public int[][] c;
     private int myMoney;
     private int index;
     public boolean isStatic;
@@ -53,6 +60,7 @@ public class BuyerAgent extends Agent {
         informOffers  = new LinkedList<Inform>();
         offerToAdd = new LinkedList<Offer>();
         agreeOffers = new LinkedList<Agree>();
+        routes = new ArrayList<Integer>();
         connectedWithBase = false;
         isReceivedAnItem = false;
 
@@ -61,16 +69,19 @@ public class BuyerAgent extends Agent {
         setAgentRoute(args[1].toString());
         this.index = Integer.parseInt(args[2].toString());
         this.myMoney = Integer.parseInt(args[3].toString());
+        Pair<int[][], int[][]> fwres = FloydWarshall.fw(graph);
+        fw = fwres.getKey();
+        c = fwres.getValue();
 
 
         System.out.println("Yo! Agent " + getAID().getName() + " is in game!");
 
 
-        if (routes.length > 1)
+        if (routes.size() > 1)
         {
-            for (int i = 0; i < routes.length; i++) { // если динамический и уже находится в вершине с товарами
-                if (routes[i] == getBaseWithGoods()) {
-                    System.out.println(getLocalName() + " has received the item at the vertex " + routes[i]); // если динамический и уже находится в вершине с товарами
+            for (int i = 0; i < routes.size(); i++) { // если динамический и уже находится в вершине с товарами
+                if (routes.get(i) == getBaseWithGoods()) {
+                    System.out.println(getLocalName() + " has received the item at the vertex " + routes.get(i)); // если динамический и уже находится в вершине с товарами
                     isReceivedAnItem = true;
                     break;
                 }
@@ -81,13 +92,19 @@ public class BuyerAgent extends Agent {
                 this.myStaticBuyerBehaviour = new staticBuyerBehaviour(this);
                 addBehaviour(myStaticBuyerBehaviour);
             }
-            this.myDynamicBuyerBehaviour = new dynamicBuyerBehaviour(this);
-            addBehaviour(myDynamicBuyerBehaviour);
+            //this.myDynamicBuyerBehaviour = new dynamicBuyerBehaviour(this);
+            //addBehaviour(myDynamicBuyerBehaviour);
+            dynamicRegisterInYPBehaviour b1 = new dynamicRegisterInYPBehaviour();
+            dynamicCyclicRAProposals b2 = new dynamicCyclicRAProposals();
+            dynamicCyclicRAAgree b3 = new dynamicCyclicRAAgree();
+            addBehaviour(new dynamicRegisterInYPBehaviour());
+            addBehaviour(new dynamicCyclicRAProposals());
+            addBehaviour(new dynamicCyclicRAAgree());
         }
         else
         {
-            if (routes[0] == getBaseWithGoods()){ // если статический и уже находится в вершине с товарами, то до свидания
-                System.out.println(getLocalName() + " has received the item at the vertex " + routes[0]);
+            if (routes.get(0) == getBaseWithGoods()){ // если статический и уже находится в вершине с товарами, то до свидания
+                System.out.println(getLocalName() + " has received the item at the vertex " + routes.get(0));
                 doDelete();
             }
             isStatic = true;
@@ -97,16 +114,20 @@ public class BuyerAgent extends Agent {
     }
 
     private void setAgentRoute(String agentRoute){ // задаём маршруты передвижений агентов
-        String agentRouteArray[] = agentRoute.split(" ");
-        this.routes = new int[agentRouteArray.length];
-        for (int i = 0; i < agentRouteArray.length; i++)
+        String agentRouteSArray[] = agentRoute.split(" ");
+        for (int i = 0; i < agentRouteSArray.length; i++)
         {
-            this.routes[i] = Integer.parseInt(agentRouteArray[i]);
+            this.routes.add(Integer.parseInt(agentRouteSArray[i]));
         }
     }
 
     public int[] getRoutes(){
-        return this.routes;
+        int[] routesIArray = new int[this.routes.size()];
+        for (int i = 0; i < routesIArray.length; i++)
+        {
+            routesIArray[i] = routes.get(i);
+        }
+        return routesIArray;
     }
 
     public int getBaseWithGoods(){

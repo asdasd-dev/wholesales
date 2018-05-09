@@ -1,6 +1,7 @@
 package custom;
 
 import jade.util.leap.ArrayList;
+import javafx.util.Pair;
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,13 +54,15 @@ public class FloydWarshall{
             return dist;
         }
 
-        public static int[][] fw(int graph[][]) {
+        public static Pair<int[][], int[][]> fw(int graph[][]) {
             int size = graph[0].length;
             int dist[][] = new int[size][size];
+            int c[][] = new int[size][size];
 
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
-                    dist[i][j] = graph[i][j] > 0 ? graph[i][j] : INF; // если нет пути из точки в точку, то ставим бесконечность
+                    dist[i][j] = graph[i][j] > -1 ? graph[i][j] : INF; // если нет пути из точки в точку, то ставим бесконечность
+                    c[i][j] = i;
                 }
             }
 
@@ -69,13 +72,34 @@ public class FloydWarshall{
                 {
                     for (int j = 0; j < size; j++)
                     {
-                        if (dist[i][k] + dist[k][j] < dist[i][j])
+                        if (dist[i][k] + dist[k][j] < dist[i][j]) {
                             dist[i][j] = dist[i][k] + dist[k][j];
+                            c[i][j] = c[k][j];
+                        }
                     }
                 }
             }
 
-            return  dist;
+            Pair<int[][], int[][]> returnValue = new Pair<>(dist, c);
+            return returnValue;
+        }
+
+        public static int[] shortestWay(int[][] c, int a, int b)
+        {
+            int first = a;
+            int last = c[a][b];
+            List<Integer> vertices = new java.util.ArrayList<Integer>();
+            while (last != first)
+            {
+                vertices.add(last);
+                last = c[a][last];
+            }
+            int[] swArray = new int[vertices.size()];
+            for (int i = 0; i < swArray.length; i++)
+            {
+                swArray[i] = vertices.get(i);
+            }
+            return swArray;
         }
 
 
