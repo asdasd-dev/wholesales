@@ -11,7 +11,6 @@ import jade.lang.acl.MessageTemplate;
 public class dynamicReceiveProposalsBehaviour extends myReceiver {
 
     private BuyerAgent myBuyerAgent;
-    MessageTemplate template;
 
     public dynamicReceiveProposalsBehaviour(Agent a, int millis) {
         super(a, millis, MessageTemplate.MatchPerformative(ACLMessage.PROPOSE));

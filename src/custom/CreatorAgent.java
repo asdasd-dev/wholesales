@@ -21,7 +21,7 @@ public class CreatorAgent extends Agent {
         Data data = new Data();
 
         try {
-            data = g.fromJson(new FileReader("C:\\jade\\src\\custom\\data.json"), Data.class);
+            data = g.fromJson(new FileReader("C:\\jade\\src\\custom\\data2.json"), Data.class);
         }
         catch (FileNotFoundException ex)
         {
