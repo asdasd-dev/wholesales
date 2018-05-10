@@ -58,7 +58,7 @@ public class staticAnswerToInformBehaviour extends OneShotBehaviour {
         }
         else
         {
-            int newPrice = myBuyerAgent.money + myBuyerAgent.money / 10;
+            int newPrice = myBuyerAgent.money + myBuyerAgent.money / 5;
             System.out.println("Agent " + myBuyerAgent.getLocalName() + " is ready to spend on delivery " + newPrice + "$ instead of " + myBuyerAgent.money + "$");
             myBuyerAgent.money = newPrice;
             return myParent.NEGATIVE_CONDITION;
