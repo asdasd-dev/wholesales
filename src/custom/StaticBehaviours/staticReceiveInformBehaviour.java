@@ -38,7 +38,6 @@ public class staticReceiveInformBehaviour extends myReceiver {
             //System.out.println(myBuyerAgent.getLocalName() + " received a null message");
         } else {
             myBuyerAgent.informOffers.add(new Inform(m));
-            System.out.println(myBuyerAgent.getLocalName() + " received an inform message from " + m.getSender().getLocalName());
         }
 
     }

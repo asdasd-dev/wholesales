@@ -4,11 +4,10 @@ import custom.BuyerAgent;
 import custom.Offer;
 import jade.core.Agent;
 import jade.core.behaviours.ReceiverBehaviour;
-import jade.core.behaviours.myReceiver;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
-public class dynamicReceiveProposalsBehaviour extends myReceiver {
+public class dynamicReceiveProposalsBehaviour extends ReceiverBehaviour {
 
     private BuyerAgent myBuyerAgent;
 

@@ -2,16 +2,13 @@ package custom.DynamicBehaviours;
 
 import custom.Agree;
 import custom.BuyerAgent;
-import custom.Offer;
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.ReceiverBehaviour;
-import jade.core.behaviours.SimpleBehaviour;
-import jade.core.behaviours.myReceiver;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
-public class dynamicReceiveAgreeBehaviour extends myReceiver {
+public class dynamicReceiveAgreeBehaviour extends ReceiverBehaviour {
+
     private BuyerAgent myBuyerAgent;
 
     public dynamicReceiveAgreeBehaviour(Agent a, int millis) {

@@ -1,17 +1,19 @@
 package custom;
 
 import com.google.gson.Gson;
-import custom.DynamicBehaviours.dynamicCyclicRAAgree;
-import custom.DynamicBehaviours.dynamicCyclicRAProposals;
-import custom.DynamicBehaviours.dynamicRegisterInYPBehaviour;
+import custom.DynamicBehaviours.*;
 import custom.StaticBehaviours.staticBuyerBehaviour;
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.*;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import javafx.util.Pair;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -103,14 +105,28 @@ public class BuyerAgent extends Agent {
                 this.myStaticBuyerBehaviour = new staticBuyerBehaviour(this);
                 addBehaviour(myStaticBuyerBehaviour);
             }
-            //this.myDynamicBuyerBehaviour = new dynamicBuyerBehaviour(this);
-            //addBehaviour(myDynamicBuyerBehaviour);
-            dynamicRegisterInYPBehaviour b1 = new dynamicRegisterInYPBehaviour();
-            dynamicCyclicRAProposals b2 = new dynamicCyclicRAProposals();
-            dynamicCyclicRAAgree b3 = new dynamicCyclicRAAgree();
+
+            //Добавляем поведения для динамического агента
+
             addBehaviour(new dynamicRegisterInYPBehaviour());
-            addBehaviour(new dynamicCyclicRAProposals());
-            addBehaviour(new dynamicCyclicRAAgree());
+
+            SequentialBehaviour be = new SequentialBehaviour(this);
+            ReceiverBehaviour be1 = new dynamicReceiveProposalsBehaviour(this, 500);
+            OneShotBehaviour be2 = new dynamicAnswerToProposalsBehaviour(be1);
+            be.addSubBehaviour(be1);
+            be.addSubBehaviour(be2);
+
+            SequentialBehaviour beA = new SequentialBehaviour(this);
+            ReceiverBehaviour be1A = new dynamicReceiveAgreeBehaviour(this, 500);
+            OneShotBehaviour be2A = new dynamicAnswerToAgreeBehaviour(be1A);
+            beA.addSubBehaviour(be1A);
+            beA.addSubBehaviour(be2A);
+
+            ParallelBehaviour pe = new ParallelBehaviour();
+            pe.addSubBehaviour(be);
+            pe.addSubBehaviour(beA);
+
+            addBehaviour(pe);
         }
         else
         {

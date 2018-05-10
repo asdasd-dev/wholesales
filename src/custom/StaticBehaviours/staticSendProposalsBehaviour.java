@@ -39,7 +39,6 @@ public class staticSendProposalsBehaviour extends OneShotBehaviour {
             startConversationMessage.setContent(message); // отправляем точку(точки), куда надо доставить и свой индекс
 
             myBuyerAgent.send(startConversationMessage);
-            System.out.println("Agent " + myBuyerAgent.getLocalName() + " sent a proposal to " + aid.getLocalName());
         });
     }
 }
