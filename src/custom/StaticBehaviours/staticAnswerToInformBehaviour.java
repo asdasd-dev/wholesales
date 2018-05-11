@@ -47,14 +47,17 @@ public class staticAnswerToInformBehaviour extends OneShotBehaviour {
                     };
                 }
                 System.out.println("●Dynamic agent " + myBuyerAgent.getLocalName() + " has received the item by himself at the base vertex");
-                myBuyerAgent.routes.add(myBuyerAgent.baseWithGoods);
                 int[] shortestWay = FloydWarshall.shortestWay(myBuyerAgent.c, minVertexToBase, myBuyerAgent.baseWithGoods);
+                myBuyerAgent.sumDist += myBuyerAgent.fw[minVertexToBase][myBuyerAgent.baseWithGoods];
                 for(int i = 0; i < shortestWay.length; i++)
                 {
                     myBuyerAgent.routes.add(shortestWay[i]);
                 }
+                myBuyerAgent.routes.add(myBuyerAgent.baseWithGoods);
+                myBuyerAgent.connectedWithBase = true;
                 System.out.println(myBuyerAgent.getLocalName() + "'s new route is " + myBuyerAgent.routes.toString());
                 myBuyerAgent.isReceivedAnItem = true;
+                myBuyerAgent.removeBehaviour(myBuyerAgent.myStaticBuyerBehaviour);
             } else if (myBuyerAgent.bestOffer.price <= myBuyerAgent.money) {
                 ACLMessage replyMsg = myBuyerAgent.bestOffer.message.createReply();
                 replyMsg.setPerformative(ACLMessage.AGREE);
@@ -63,7 +66,6 @@ public class staticAnswerToInformBehaviour extends OneShotBehaviour {
                 System.out.println("Agent " + myBuyerAgent.getLocalName() + " is waiting the item to be delivered at the vertex " + Integer.toString(myBuyerAgent.bestOffer.deleiveryPoint)
                         + " from the agent " + myBuyerAgent.bestOffer.message.getSender().getLocalName());
                 myBuyerAgent.isReceivedAnItem = true;
-                myBuyerAgent.connectedWithBase = true;
             }
         } else {
             if (!myBuyerAgent.isStatic && myBuyerAgent.selfPrice <= myBuyerAgent.money) {
@@ -80,15 +82,17 @@ public class staticAnswerToInformBehaviour extends OneShotBehaviour {
                     };
                 }
                 System.out.println("●Dynamic agent " + myBuyerAgent.getLocalName() + " has received the item by himself at the base vertex");
-                myBuyerAgent.routes.add(myBuyerAgent.baseWithGoods);
                 int[] shortestWay = FloydWarshall.shortestWay(myBuyerAgent.c, minVertexToBase, myBuyerAgent.baseWithGoods);
+                myBuyerAgent.sumDist += myBuyerAgent.fw[minVertexToBase][myBuyerAgent.baseWithGoods];
                 for(int i = 0; i < shortestWay.length; i++)
                 {
                     myBuyerAgent.routes.add(shortestWay[i]);
                 }
+                myBuyerAgent.routes.add(myBuyerAgent.baseWithGoods);
                 System.out.println(myBuyerAgent.getLocalName() + "'s new route is " + myBuyerAgent.routes.toString());
                 myBuyerAgent.isReceivedAnItem = true;
                 myBuyerAgent.connectedWithBase = true;
+                myBuyerAgent.removeBehaviour(myBuyerAgent.myStaticBuyerBehaviour);
             }
         }
     }

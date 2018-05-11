@@ -52,6 +52,7 @@ public class dynamicAnswerToAgreeBehaviour extends OneShotBehaviour {
                     replyMsg.setPerformative(ACLMessage.CONFIRM);
                     System.out.println("●" + myBuyerAgent.getLocalName() + " has delivered the item to the " + a.message.getSender().getLocalName() + " at the vertex " + a.deleiveryPoint + " for $" + a.price);
                     int[] shortestWay = FloydWarshall.shortestWay(myBuyerAgent.c, minVertexToAgent, a.deleiveryPoint);
+                    myBuyerAgent.sumDist += myBuyerAgent.fw[minVertexToAgent][a.deleiveryPoint];
                     for (int i = 0; i < shortestWay.length; i++) {
                         myBuyerAgent.routes.add(shortestWay[i]);
                     }
@@ -65,7 +66,9 @@ public class dynamicAnswerToAgreeBehaviour extends OneShotBehaviour {
                     myBuyerAgent.connectedWithBase = true;
                     System.out.println("●Dynamic agent " + myBuyerAgent.getLocalName() + " has received the item at the base vertex"); // если динамический и уже находится в вершине с товарами
                     myBuyerAgent.isReceivedAnItem = true;
+                    myBuyerAgent.removeBehaviour(myBuyerAgent.myStaticBuyerBehaviour);
                     int[] shortestWay = FloydWarshall.shortestWay(myBuyerAgent.c, minVertexToBase, myBuyerAgent.baseWithGoods);
+                    myBuyerAgent.sumDist += myBuyerAgent.fw[minVertexToBase][myBuyerAgent.baseWithGoods];
                     for (int i = 0; i < shortestWay.length; i++) {
                         myBuyerAgent.routes.add(shortestWay[i]);
                     }
@@ -76,6 +79,7 @@ public class dynamicAnswerToAgreeBehaviour extends OneShotBehaviour {
                     }
                     myBuyerAgent.routes.add(a.deleiveryPoint);
                     shortestWay = FloydWarshall.shortestWay(myBuyerAgent.c, a.deleiveryPoint, minVertexToAgent);
+                    myBuyerAgent.sumDist += myBuyerAgent.fw[a.deleiveryPoint][minVertexToAgent];
                     for (int i = 0; i < shortestWay.length; i++) {
                         myBuyerAgent.routes.add(shortestWay[i]);
                     }
@@ -89,11 +93,14 @@ public class dynamicAnswerToAgreeBehaviour extends OneShotBehaviour {
                     myBuyerAgent.connectedWithBase = true;
                     System.out.println("●Dynamic agent " + myBuyerAgent.getLocalName() + " has received the item at the base vertex"); // если динамический и уже находится в вершине с товарами
                     myBuyerAgent.isReceivedAnItem = true;
+                    myBuyerAgent.removeBehaviour(myBuyerAgent.myStaticBuyerBehaviour);
                     int[] shortestWay = FloydWarshall.shortestWay(myBuyerAgent.c, minVertexToBase, myBuyerAgent.baseWithGoods);
+                    myBuyerAgent.sumDist += myBuyerAgent.fw[minVertexToBase][myBuyerAgent.baseWithGoods];
                     for (int i = 0; i < shortestWay.length; i++) {
                         myBuyerAgent.routes.add(shortestWay[i]);
                     }
-                    myBuyerAgent.routes.add(myBuyerAgent.baseWithGoods);
+                    if(!myBuyerAgent.routes.contains(myBuyerAgent.baseWithGoods))
+                        myBuyerAgent.routes.add(myBuyerAgent.baseWithGoods);
                     System.out.println(myBuyerAgent.getLocalName() + "'s new route is " + myBuyerAgent.routes.toString());
                 } else {
                     replyMsg.setPerformative(ACLMessage.CANCEL);

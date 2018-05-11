@@ -31,6 +31,7 @@ public class BuyerAgent extends Agent {
     public int[][] fw;
     public int[][] c;
     public int money;
+    public int sumDist;
     private int index;
     public boolean isStatic;
     public boolean isReceivedAnItem;
@@ -49,6 +50,7 @@ public class BuyerAgent extends Agent {
     protected void setup() {
         super.setup();
         selfPrice = 99999;
+        sumDist = 0;
 
         Gson g = new Gson();
         Data data = new Data();
@@ -78,6 +80,7 @@ public class BuyerAgent extends Agent {
         this.greed = data.greed[this.index];
         fw = fwres.getKey();
         c = fwres.getValue();
+        sumDist = getGraphSum(getRoutes());
 
         if (routes.contains(baseWithGoods))
         {
@@ -184,7 +187,7 @@ public class BuyerAgent extends Agent {
                 System.out.println(this.getLocalName() + " deregistered from YP");
             } catch (Exception e) {
             }
-            int delta = getGraphSum(getRoutes()) - getGraphSum(startRoute);
+            int delta = sumDist - getGraphSum(startRoute);
             try {
                 DFAgentDescription agentDescription = new DFAgentDescription();
                 ServiceDescription serviceDescription = new ServiceDescription();
