@@ -3,6 +3,7 @@ package custom.StaticBehaviours;
 import custom.BuyerAgent;
 import custom.StaticBehaviours.staticBuyerBehaviour;
 import jade.core.AID;
+import jade.core.behaviours.FSMBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;

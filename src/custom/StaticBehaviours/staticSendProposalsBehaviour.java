@@ -21,10 +21,6 @@ public class staticSendProposalsBehaviour extends OneShotBehaviour {
             ACLMessage startConversationMessage = new ACLMessage(ACLMessage.PROPOSE);
             startConversationMessage.addReceiver(aid);
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.MILLISECOND, 10);
-            startConversationMessage.setReplyByDate(calendar.getTime());
-
             String message = "";
             int[] routes = myBuyerAgent.getRoutes();
             for (int i = 0; i < routes.length; i++)

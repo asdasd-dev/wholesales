@@ -18,6 +18,10 @@ public class staticAnswerToInformBehaviour extends OneShotBehaviour {
     @Override
     public void action() {
         myBuyerAgent = (BuyerAgent) myAgent;
+        if(myBuyerAgent.getIndex() == 6)
+        {
+
+        }
         if (!myBuyerAgent.informOffers.isEmpty() && !myBuyerAgent.isReceivedAnItem) {
             if (myBuyerAgent.bestOffer == null)
                 myBuyerAgent.bestOffer = myBuyerAgent.informOffers.getFirst();
@@ -92,6 +96,7 @@ public class staticAnswerToInformBehaviour extends OneShotBehaviour {
     @Override
     public int onEnd() {
         staticBuyerBehaviour myParent = (staticBuyerBehaviour) getParent();
+        myBuyerAgent.informOffers.clear();
         if (myBuyerAgent.isReceivedAnItem)
         {
             return myParent.POSITIVE_CONDITION;
@@ -99,6 +104,7 @@ public class staticAnswerToInformBehaviour extends OneShotBehaviour {
         else
         {
             int newPrice = myBuyerAgent.money + myBuyerAgent.money / 5;
+            System.out.println("Agent " + myBuyerAgent.getLocalName() + " is ready to spend on delivery " + newPrice + "$ instead of " + myBuyerAgent.money + "$");
             myBuyerAgent.money = newPrice;
             return myParent.NEGATIVE_CONDITION;
         }

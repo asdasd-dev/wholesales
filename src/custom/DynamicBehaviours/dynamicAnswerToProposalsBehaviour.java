@@ -49,8 +49,7 @@ public class dynamicAnswerToProposalsBehaviour extends OneShotBehaviour {
                     int priceToBase = myBuyerAgent.fw[myRoute[i]][myBuyerAgent.baseWithGoods] * myBuyerAgent.getGreed() * 2;
                     if (priceToBase < minPriceToBase) {
                         minPriceToBase = priceToBase;
-                    }
-                    ;
+                    };
                 }
                 replyMsg.setPerformative(ACLMessage.INFORM);
                 if (myBuyerAgent.connectedWithBase && intersection.length > 0) // если наш агент проходит через базу с товарами и через точку,
