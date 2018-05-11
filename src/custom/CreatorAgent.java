@@ -31,6 +31,8 @@ public class CreatorAgent extends Agent {
         ContainerController cc = getContainerController();
         AgentController agent;
         try {
+            agent = cc.createNewAgent("StatisticsAgent", "custom.StatisticAgent", new Object[]{});
+            agent.start();
             for (int i = 0; i < data.numberOfAgents; i++) {
                 String nameAgent = "agent_" + i;
                 agent = cc.createNewAgent(nameAgent, "custom.BuyerAgent",

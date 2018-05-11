@@ -6,6 +6,10 @@ import custom.StaticBehaviours.staticBuyerBehaviour;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.*;
+import jade.domain.DFService;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import javafx.util.Pair;
@@ -22,6 +26,7 @@ public class BuyerAgent extends Agent {
     public int baseWithGoods; // вершина, в которую доставлены все товары
     public List<Integer> routes; // маршрут агента
     private int greed; // кф жадности (стоимость 1 ед. отклонения от траектории)
+    public int[] startRoute;
     public int[][] graph;
     public int[][] fw;
     public int[][] c;
@@ -66,6 +71,7 @@ public class BuyerAgent extends Agent {
         Object[] args = getArguments();
         this.baseWithGoods = Integer.parseInt(args[0].toString());
         setAgentRoute(args[1].toString());
+        startRoute = getRoutes();
         this.index = Integer.parseInt(args[2].toString());
         this.money = Integer.parseInt(args[3].toString());
         Pair<int[][], int[][]> fwres = FloydWarshall.fw(graph);
@@ -169,6 +175,41 @@ public class BuyerAgent extends Agent {
         return this.greed;
     }
 
+    @Override
+    protected void takeDown() {
+        super.takeDown();
+        if(!isStatic) {
+            try {
+                DFService.deregister(this);
+                System.out.println(this.getLocalName() + " deregistered from YP");
+            } catch (Exception e) {
+            }
+            int delta = getGraphSum(getRoutes()) - getGraphSum(startRoute);
+            try {
+                DFAgentDescription agentDescription = new DFAgentDescription();
+                ServiceDescription serviceDescription = new ServiceDescription();
+                serviceDescription.setType("dynamicStatistics");
+                agentDescription.addServices(serviceDescription);
+
+                DFAgentDescription[] results = DFService.search(this, agentDescription);
+
+                // ищем подходящих агентов для доставки по маршруту их передвижения
+
+                if (results.length > 0) {
+                    for (DFAgentDescription dfd : results) {
+                        AID provider = dfd.getName();
+                        ACLMessage startConversationMessage = new ACLMessage(ACLMessage.REQUEST);
+                        startConversationMessage.addReceiver(provider);
+                        startConversationMessage.setContent(Integer.toString(delta));
+                        send(startConversationMessage);
+                    }
+                }
+
+            } catch (FIPAException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     private void setGraph(String[] adjMatrix){
         int length = adjMatrix.length;
@@ -181,5 +222,15 @@ public class BuyerAgent extends Agent {
                 this.graph[i][j] = Integer.parseInt(line[j]);
             }
         }
+    }
+
+    private int getGraphSum(int[] routesToCheck){
+        LinkedList<Integer> checkedRoutes = new LinkedList<Integer>();
+        int sum = 0;
+        for (int i = 0; i < routesToCheck.length - 1; i++)
+        {
+            sum += graph[routesToCheck[i]][routesToCheck[i + 1]];
+        };
+        return sum;
     }
 }

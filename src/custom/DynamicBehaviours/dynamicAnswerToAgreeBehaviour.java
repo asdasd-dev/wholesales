@@ -51,18 +51,17 @@ public class dynamicAnswerToAgreeBehaviour extends OneShotBehaviour {
                 if (myBuyerAgent.connectedWithBase && !myBuyerAgent.routes.contains(a.deleiveryPoint) && a.price >= minPriceToAgent) {
                     replyMsg.setPerformative(ACLMessage.CONFIRM);
                     System.out.println("●" + myBuyerAgent.getLocalName() + " has delivered the item to the " + a.message.getSender().getLocalName() + " at the vertex " + a.deleiveryPoint + " for $" + a.price);
-                    myBuyerAgent.routes.add(a.deleiveryPoint);
                     int[] shortestWay = FloydWarshall.shortestWay(myBuyerAgent.c, minVertexToAgent, a.deleiveryPoint);
                     for (int i = 0; i < shortestWay.length; i++) {
                         myBuyerAgent.routes.add(shortestWay[i]);
                     }
+                    myBuyerAgent.routes.add(a.deleiveryPoint);
                     System.out.println(myBuyerAgent.getLocalName() + "'s new route is " + myBuyerAgent.routes.toString());
                 } else if (!myBuyerAgent.connectedWithBase && !myBuyerAgent.routes.contains(a.deleiveryPoint) && a.price >= minPriceToAgent / 2 + minPriceToBase / 2 +
                         myBuyerAgent.fw[a.deleiveryPoint][myBuyerAgent.baseWithGoods] * myBuyerAgent.getGreed()) // то есть минимальный путь: точка моего маршрута - база - точка маршрута агента, которому доставляем
                 {
                     replyMsg.setPerformative(ACLMessage.CONFIRM);
                     System.out.println("●" + myBuyerAgent.getLocalName() + " has delivered the item to the " + a.message.getSender().getLocalName() + " at the vertex " + a.deleiveryPoint + " for $" + a.price);
-                    myBuyerAgent.routes.add(myBuyerAgent.baseWithGoods);
                     myBuyerAgent.connectedWithBase = true;
                     System.out.println("●Dynamic agent " + myBuyerAgent.getLocalName() + " has received the item at the base vertex"); // если динамический и уже находится в вершине с товарами
                     myBuyerAgent.isReceivedAnItem = true;
@@ -70,12 +69,13 @@ public class dynamicAnswerToAgreeBehaviour extends OneShotBehaviour {
                     for (int i = 0; i < shortestWay.length; i++) {
                         myBuyerAgent.routes.add(shortestWay[i]);
                     }
-                    myBuyerAgent.routes.add(a.deleiveryPoint);
+                    myBuyerAgent.routes.add(myBuyerAgent.baseWithGoods);
                     shortestWay = FloydWarshall.shortestWay(myBuyerAgent.c, myBuyerAgent.baseWithGoods, a.deleiveryPoint);
                     for (int i = 0; i < shortestWay.length; i++) {
                         myBuyerAgent.routes.add(shortestWay[i]);
                     }
-                    shortestWay = FloydWarshall.shortestWay(myBuyerAgent.c, minVertexToAgent, a.deleiveryPoint);
+                    myBuyerAgent.routes.add(a.deleiveryPoint);
+                    shortestWay = FloydWarshall.shortestWay(myBuyerAgent.c, a.deleiveryPoint, minVertexToAgent);
                     for (int i = 0; i < shortestWay.length; i++) {
                         myBuyerAgent.routes.add(shortestWay[i]);
                     }
@@ -86,7 +86,6 @@ public class dynamicAnswerToAgreeBehaviour extends OneShotBehaviour {
                 } else if (!myBuyerAgent.connectedWithBase && myBuyerAgent.routes.contains(a.deleiveryPoint) && a.price >= minPriceToBase) {
                     replyMsg.setPerformative(ACLMessage.CONFIRM);
                     System.out.println("●" + myBuyerAgent.getLocalName() + " has delivered the item to the " + a.message.getSender().getLocalName() + " at the vertex " + a.deleiveryPoint + " for $" + a.price);
-                    myBuyerAgent.routes.add(myBuyerAgent.baseWithGoods);
                     myBuyerAgent.connectedWithBase = true;
                     System.out.println("●Dynamic agent " + myBuyerAgent.getLocalName() + " has received the item at the base vertex"); // если динамический и уже находится в вершине с товарами
                     myBuyerAgent.isReceivedAnItem = true;
@@ -94,6 +93,7 @@ public class dynamicAnswerToAgreeBehaviour extends OneShotBehaviour {
                     for (int i = 0; i < shortestWay.length; i++) {
                         myBuyerAgent.routes.add(shortestWay[i]);
                     }
+                    myBuyerAgent.routes.add(myBuyerAgent.baseWithGoods);
                     System.out.println(myBuyerAgent.getLocalName() + "'s new route is " + myBuyerAgent.routes.toString());
                 } else {
                     replyMsg.setPerformative(ACLMessage.CANCEL);
@@ -103,7 +103,7 @@ public class dynamicAnswerToAgreeBehaviour extends OneShotBehaviour {
                 ((SequentialBehaviour) getParent()).reset();
             }
             catch (ReceiverBehaviour.TimedOut timedOut) {
-                ((SequentialBehaviour) getParent()).reset();
+                myBuyerAgent.doDelete();
             } catch (ReceiverBehaviour.NotYetReady notYetReady) {
                 notYetReady.printStackTrace();
             }

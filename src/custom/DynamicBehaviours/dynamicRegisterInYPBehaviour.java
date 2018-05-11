@@ -44,11 +44,6 @@ public class dynamicRegisterInYPBehaviour extends OneShotBehaviour {
         try {
             DFService.register(myAgent, dfd);
             System.out.println("Dynamic agent " + myAgent.getAID().getLocalName() + " is registered in Yellow Pages service");
-
-            /*//init offer pool
-            myParentFSM.myCitizenAgent.offersPool = new LinkedList<>();
-            myParentFSM.myCitizenAgent.best_offer = new LinkedList<>();*/
-
         }
         catch (FIPAException fe) {
             fe.printStackTrace();

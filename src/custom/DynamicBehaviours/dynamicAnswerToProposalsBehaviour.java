@@ -75,7 +75,7 @@ public class dynamicAnswerToProposalsBehaviour extends OneShotBehaviour {
                 ((SequentialBehaviour) getParent()).reset();
             }
             catch (ReceiverBehaviour.TimedOut timedOut) {
-                ((SequentialBehaviour) getParent()).reset();
+                myBuyerAgent.doDelete();
             } catch (ReceiverBehaviour.NotYetReady notYetReady) {
                 notYetReady.printStackTrace();
             }
