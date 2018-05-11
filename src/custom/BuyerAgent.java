@@ -26,6 +26,9 @@ public class BuyerAgent extends Agent {
     public int baseWithGoods; // вершина, в которую доставлены все товары
     public List<Integer> routes; // маршрут агента
     private int greed; // кф жадности (стоимость 1 ед. отклонения от траектории)
+    public AID receivedFrom;
+    public int home;
+    public int work;
     public int[] startRoute;
     public int[][] graph;
     public int[][] fw;
@@ -55,7 +58,7 @@ public class BuyerAgent extends Agent {
         Gson g = new Gson();
         Data data = new Data();
         try {
-            data = g.fromJson(new FileReader("C:\\jade\\src\\custom\\data2.json"), Data.class);
+            data = g.fromJson(new FileReader("C:\\jade\\src\\custom\\data3.json"), Data.class);
         }
         catch (FileNotFoundException ex)
         {
@@ -74,6 +77,8 @@ public class BuyerAgent extends Agent {
         this.baseWithGoods = Integer.parseInt(args[0].toString());
         setAgentRoute(args[1].toString());
         startRoute = getRoutes();
+        home = getRoutes()[0];
+        work = getRoutes()[getRoutes().length - 1];
         this.index = Integer.parseInt(args[2].toString());
         this.money = Integer.parseInt(args[3].toString());
         Pair<int[][], int[][]> fwres = FloydWarshall.fw(graph);
@@ -120,13 +125,13 @@ public class BuyerAgent extends Agent {
             addBehaviour(new dynamicRegisterInYPBehaviour());
 
             SequentialBehaviour be = new SequentialBehaviour(this);
-            ReceiverBehaviour be1 = new dynamicReceiveProposalsBehaviour(this, 1000);
+            ReceiverBehaviour be1 = new dynamicReceiveProposalsBehaviour(this, 5000);
             OneShotBehaviour be2 = new dynamicAnswerToProposalsBehaviour(be1);
             be.addSubBehaviour(be1);
             be.addSubBehaviour(be2);
 
             SequentialBehaviour beA = new SequentialBehaviour(this);
-            ReceiverBehaviour be1A = new dynamicReceiveAgreeBehaviour(this, 1000);
+            ReceiverBehaviour be1A = new dynamicReceiveAgreeBehaviour(this, 5000);
             OneShotBehaviour be2A = new dynamicAnswerToAgreeBehaviour(be1A);
             beA.addSubBehaviour(be1A);
             beA.addSubBehaviour(be2A);
@@ -187,7 +192,7 @@ public class BuyerAgent extends Agent {
                 System.out.println(this.getLocalName() + " deregistered from YP");
             } catch (Exception e) {
             }
-            int delta = sumDist - getGraphSum(startRoute);
+            int delta = getGraphSum(getRoutes()) - getGraphSum(startRoute);
             try {
                 DFAgentDescription agentDescription = new DFAgentDescription();
                 ServiceDescription serviceDescription = new ServiceDescription();

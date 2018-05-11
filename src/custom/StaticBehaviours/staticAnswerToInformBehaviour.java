@@ -66,6 +66,8 @@ public class staticAnswerToInformBehaviour extends OneShotBehaviour {
                 System.out.println("Agent " + myBuyerAgent.getLocalName() + " is waiting the item to be delivered at the vertex " + Integer.toString(myBuyerAgent.bestOffer.deleiveryPoint)
                         + " from the agent " + myBuyerAgent.bestOffer.message.getSender().getLocalName());
                 myBuyerAgent.isReceivedAnItem = true;
+                myBuyerAgent.receivedFrom = replyMsg.getSender();
+                myBuyerAgent.connectedWithBase = true; //для цепочки
             }
         } else {
             if (!myBuyerAgent.isStatic && myBuyerAgent.selfPrice <= myBuyerAgent.money) {

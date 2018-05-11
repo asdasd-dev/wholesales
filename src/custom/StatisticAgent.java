@@ -17,7 +17,7 @@ public class StatisticAgent extends Agent {
         addBehaviour(new statisticsRegisterInYPBehaviour());
 
         SequentialBehaviour be = new SequentialBehaviour(this);
-        ReceiverBehaviour be1 = new statisticsReceiveRequestBehaviour(this, 5000);
+        ReceiverBehaviour be1 = new statisticsReceiveRequestBehaviour(this, 10000);
         OneShotBehaviour be2 = new statisticsAnswerToRequestBehaviour(be1);
         be.addSubBehaviour(be1);
         be.addSubBehaviour(be2);
