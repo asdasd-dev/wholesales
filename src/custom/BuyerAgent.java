@@ -111,13 +111,13 @@ public class BuyerAgent extends Agent {
             addBehaviour(new dynamicRegisterInYPBehaviour());
 
             SequentialBehaviour be = new SequentialBehaviour(this);
-            ReceiverBehaviour be1 = new dynamicReceiveProposalsBehaviour(this, 500);
+            ReceiverBehaviour be1 = new dynamicReceiveProposalsBehaviour(this, 1000);
             OneShotBehaviour be2 = new dynamicAnswerToProposalsBehaviour(be1);
             be.addSubBehaviour(be1);
             be.addSubBehaviour(be2);
 
             SequentialBehaviour beA = new SequentialBehaviour(this);
-            ReceiverBehaviour be1A = new dynamicReceiveAgreeBehaviour(this, 500);
+            ReceiverBehaviour be1A = new dynamicReceiveAgreeBehaviour(this, 1000);
             OneShotBehaviour be2A = new dynamicAnswerToAgreeBehaviour(be1A);
             beA.addSubBehaviour(be1A);
             beA.addSubBehaviour(be2A);

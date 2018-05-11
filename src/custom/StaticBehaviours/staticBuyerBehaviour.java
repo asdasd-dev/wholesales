@@ -37,9 +37,9 @@ public class staticBuyerBehaviour extends FSMBehaviour {
         registerFirstState(new WakerBehaviour(a, 100) { }, WAIT_FOR_YP_REGISTER);
         registerState(new searchForDeliveryOffers(), SEARCH_DELIVERYMAN_STATE);
         registerState(new staticSendProposalsBehaviour(), SEND_PROPOSALS_STATE);
-        registerState(new staticReceiveInformBehaviour(a,500), RECEIVE_INFORMATION_STATE);
+        registerState(new staticReceiveInformBehaviour(a,300), RECEIVE_INFORMATION_STATE);
         registerState(new staticAnswerToInformBehaviour(), ANSWER_TO_INFORM_STATE);
-        registerState(new staticReceiveConfirmBehaviour(a, 1000), RECEIVE_CONFIRM_STATE);
+        registerState(new staticReceiveConfirmBehaviour(a, 300), RECEIVE_CONFIRM_STATE);
         registerLastState(new staticFinalBehaviour(), END_STATE);
 
         registerDefaultTransition(
@@ -65,7 +65,7 @@ public class staticBuyerBehaviour extends FSMBehaviour {
 
         registerTransition(
                 ANSWER_TO_INFORM_STATE,
-                SEND_PROPOSALS_STATE,
+                SEARCH_DELIVERYMAN_STATE,
                 NEGATIVE_CONDITION
         );
 
